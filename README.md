@@ -9,10 +9,11 @@
 
 ##  Badges
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)  
-![NLP](https://img.shields.io/badge/NLP-Sentiment%20%26%20Topics-purple.svg)  
-![Models](https://img.shields.io/badge/Models-LogReg%2C%20NaiveBayes%2C%20BERT-lightgrey.svg)  
-![Deployment](https://img.shields.io/badge/Deployment-Joblib%20%2F%20Pipeline-green.svg)  
+![Python](https://img.shields.io/badge/Python-3.10+-blue.svg) 
+![NLP](https://img.shields.io/badge/NLP-Sentiment%20%26%20Topics-purple.svg) 
+![Traditional Models](https://img.shields.io/badge/Models-LogReg%2C%20NaiveBayes-blue.svg)
+![Deep Learning](https://img.shields.io/badge/Models-LSTM%2C%20BERT-purple.svg)
+![Deployment](https://img.shields.io/badge/Deployment-Joblib%20%2F%20Pipeline-green.svg) 
 ![Status](https://img.shields.io/badge/Stage-Capstone%20Complete-brightgreen.svg)
 
 ---
@@ -56,6 +57,9 @@ Customer reviews collected from multiple platforms.
 - Flair  
 - BERT (via Hugging Face Transformers)
 
+### Deep Learning
+- LSTM (Bidirectional, with dropout and batch normalization)
+
 ---
 
 ##  Preprocessing Steps
@@ -87,30 +91,42 @@ Customer reviews collected from multiple platforms.
 
 ##  Model Saving
 
-- Models and TF-IDF vectorizer saved using `joblib`  
-- Optionally exported as a pipeline for deployment  
+- Traditional models and TF-IDF vectorizer saved using `joblib`
+- LSTM model saved in native Keras format (`.keras`)
+- Tokenizer and label encoder saved as `.pkl` files
+- Training history saved for performance tracking
 
 ---
 
 ##  Results Summary
 
-| Model               | Accuracy | Neutral F1 | Notes                          |
-|---------------------|----------|------------|--------------------------------|
-| Naive Bayes         | 1.00     | 1.00       | Perfect scores on clean data   |
-| Logistic Regression | 1.00     | 1.00       | Same as Naive Bayes            |
-| TextBlob            | 0.67     | 0.28       | Fast, but weak on neutral      |
-| VADER               | 0.67     | 0.43       | Better, but still biased       |
-| Flair               | 0.67     | 0.00       | Ignores neutral class          |
-| BERT                | 0.67     | 0.00       | Powerful, but needs fine-tuning|
-
+| Model               | Accuracy | Neutral F1 | Notes                                 |
+|---------------------|----------|------------|----------------------------------------|
+| Naive Bayes         | 1.00     | 1.00       | Perfect scores on clean data           |
+| Logistic Regression | 1.00     | 1.00       | Same as Naive Bayes                    |
+| LSTM                | 1.00     | 1.00       | Deep learning model with perfect scores|
+| TextBlob            | 0.67     | 0.28       | Fast, but weak on neutral              |
+| VADER               | 0.67     | 0.43       | Better, but still biased               |
+| Flair               | 0.67     | 0.00       | Ignores neutral class                  |
+| BERT                | 0.67     | 0.00       | Powerful, but needs fine-tuning        |
 ---
+
+## LSTM Insights
+- Achieved perfect classification across all sentiment classes
+- Early convergence with extremely low loss
+- Sudden drop in validation accuracy at epoch 4 suggests potential overfitting or data anomaly
+- Highlights importance of monitoring both training and validation metrics
 
 ##  Reflections
 
 - Neutral sentiment is the hardest to classify  
 - Pretrained models require fine-tuning for 3-class tasks  
 - Traditional models excel on clean, balanced datasets  
-- Error analysis and cross-validation are essential for robustness  
+- Error analysis and cross-validation are essential for robustness
+
+## Evaluation Tools
+- `sklearn.metrics` for precision, recall, F1-score
+- Confusion matrices visualized with `seaborn` and `matplotlib`
 
 ---
 
