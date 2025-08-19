@@ -170,88 +170,98 @@ plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.show()
 
-"""# Confusion Matrix for Logistic Regression / Naive Bayes - Report
+"""# Final Report - Analysis with TF-IDF, Naive Bayes, and Logistic Regression
 
-Confusion Matrix Comparison
+### Confusion Matrix Comparison
 
-| Model | Negative | Neutral | Positive | Misclassifications |
+| Model               | Negative | Neutral | Positive | Misclassifications |
+|---------------------|----------|---------|----------|---------------------|
+| **Naive Bayes**     | 3325     | 3317    | 3358     | 0                   |
+| **Logistic Regression** | 3325     | 3317    | 3358     | 0                   |
 
-| Naive Bayes | 3325 | 3317 | 3358 | 0 |
+Both models achieved **good?! classification** across all sentiment categories, with **100% accuracy**, **no misclassifications**, and **identical performance**.
 
-| Logistic Regression | 3325 | 3317 | 3358 | 0 |
+---
 
-- Both models achieved 100% accuracy.
-- No misclassifications in either case.
-- Identical performance across all sentiment categories.
+### Insights
 
-Insights
+- **Data Quality**: The flawless results suggest the dataset is exceptionally clean and well-balanced. It may also indicate that the sentiment labels are strongly aligned with the textual features.
+  
+- **Model Behavior**: Both Naive Bayes and Logistic Regression performed optimally, likely due to the effectiveness of TF-IDF in separating sentiment classes. The feature space appears highly discriminative.
 
-- Data quality: The good results suggest the dataset is clean, balanced, and possibly too easy for traditional models.
-- Model behavior: Logistic Regression and Naive Bayes both excelled, likely due to strong feature separation from TF-IDF vectorization.
+- **Risk of Overfitting**: While the metrics are impressive, such perfect scores raise concerns about potential overfitting or overly simplistic label-text relationships.
 
+---
 
-**Risk of overfitting**?: Such perfect results may suggest the model is overfitting or the dataset lacks complexity.
+### Preprocessing Pipeline
 
-# Final Report
+To prepare the review text for modeling, I implemented a custom cleaning function using NLTK. The steps included:
 
-Preprocessing Pipeline
+- Lowercasing all text  
+- Removing punctuation (`re` and `string`)  
+- Tokenization (`nltk.word_tokenize`)  
+- Lemmatization (`WordNetLemmatizer`)  
+- Stopword removal (`nltk.corpus.stopwords`)  
 
-To clean the review text, I applied the following steps using NLTK:
+The cleaned output was stored in a new column: `review_clean`.
 
-- Lowercasing all text
-- Removing punctuation using re and string modules
-- Tokenization with nltk.word_tokenize
-- Lemmatization with WordNetLemmatizer
-- Removal of English stopwords
+---
 
-This pipeline was encapsulated in a function called clean_my_df, and the output was stored in a new column called review_clean.
+### Label Encoding
 
-Label Encoding
+Sentiment labels were mapped to numeric values to enable multiclass classification:
 
-Original sentiment labels were mapped to numeric values:
+- **Positive** → `1`  
+- **Neutral** → `0`  
+- **Negative** → `-1`  
 
-- positive → 1
-- neutral → 0
-- negative → -1
+---
 
-This allowed the models to treat the problem as a multiclass classification task.
+### Feature Extraction with TF-IDF
 
-Feature Extraction with TF-IDF
+Using `TfidfVectorizer`, I transformed the cleaned text into numerical features. The `max_features` parameter was set to **5000** to retain the most informative terms while controlling dimensionality.
 
-Using TfidfVectorizer, I transformed the preprocessed text into numerical features. The max_features parameter was set to 5000 to retain the most informative terms while controlling dimensionality.
+---
 
-Models Used
+### Models Used
 
-1. Multinomial Naive Bayes
-- Fast and efficient for text classification
-- Assumes conditional independence between words
+#### 1. **Multinomial Naive Bayes**
+- Fast and efficient for text classification  
+- Assumes conditional independence between words  
+- Ideal for sparse, high-dimensional data like TF-IDF
 
-2. Logistic Regression
-- Linear model capable of handling multiclass problems
-- Used max_iter=1000 to ensure convergence
+#### 2. **Logistic Regression**
+- Linear model capable of handling multiclass problems  
+- Configured with `max_iter=1000` to ensure convergence  
+- Robust and interpretable baseline for text classification
 
-Model Evaluation
+---
 
-Both models achieved 100% accuracy, precision, recall, and F1 scores across all classes.
+### Model Evaluation
 
-Accuracy: 1.00
+Both models achieved:
 
-Classification Report:
+- **Accuracy**: 1.00  
+- **Precision, Recall, F1-score**: 1.00 across all classes
 
--1: Precision = 1.00, Recall = 1.00, F1 = 1.00  
- 0: Precision = 1.00, Recall = 1.00, F1 = 1.00  
- 1: Precision = 1.00, Recall = 1.00, F1 = 1.00
+#### Classification Report:
 
-While these results may seem too good to be true, I plan to investigate potential causes such as data leakage or overly simplistic text-label alignment.
+| Class     | Precision | Recall | F1-score | Support |
+|-----------|-----------|--------|----------|---------|
+| Negative  | 1.00      | 1.00   | 1.00     | 3325    |
+| Neutral   | 1.00      | 1.00   | 1.00     | 3317    |
+| Positive  | 1.00      | 1.00   | 1.00     | 3358    |
 
-Reflections
+---
 
-This project strengthened my understanding of:
+### Reflections
 
-- Text preprocessing pipelines
-- Feature engineering with TF-IDF
-- Building and evaluating classification models
-- The importance of sanity-checking “good” results
+This project deepened my understanding of:
+
+- Building robust text preprocessing pipelines  
+- Feature engineering with TF-IDF  
+- Training and evaluating classification models  
+- The importance of critically assessing good results
 
 # Add a BERT, Text Blob, Vader, or Flair model here and compare to your above results!
 
@@ -458,46 +468,51 @@ plt.show()
 
 """# Confusion Matrix for Pretrained Models - Report
 
-Comparative Analysis: Confusion Matrices of TextBlob, VADER, Flair, and BERT
+## Comparative Analysis: Confusion Matrices of TextBlob, VADER, Flair, and BERT
 
-| Model | Neutral Accuracy | Positive Accuracy | Negative Accuracy | Neutral Misclassification Pattern | Notes |
+| **Model**   | **Neutral Accuracy** | **Positive Accuracy** | **Negative Accuracy** | **Neutral Misclassification Pattern**     | **Notes**                                |
+|-------------|----------------------|------------------------|------------------------|--------------------------------------------|-------------------------------------------|
+| **TextBlob** | Very poor (18%)      | Perfect (100%)         | Strong (80%)           | Mostly misclassified as positive           | Rule-based; lacks nuance                  |
+| **VADER**    | Moderate (25%)       | Strong (92%)           | Decent (76%)           | Mostly misclassified as positive           | Lexicon-based; positivity bias            |
+| **Flair**    | None (0%)            | Perfect (100%)         | Excellent (99%)        | Split between negative and positive        | Deep learning; ignores neutral            |
+| **BERT**     | None (0%)            | Perfect (100%)         | Perfect (100%)         | Split between negative and positive        | Deep learning; binary bias                |
 
-| TextBlob | Very poor (18%) | Perfect (100%) | Strong (80%) | Mostly misclassified as positive | Rule-based; lacks nuance |
-
-| VADER | Moderate (25%) | Strong (92%) | Decent (76%) | Mostly misclassified as positive | Lexicon-based; positivity bias |
-
-| Flair | None (0%) | Perfect (100%) | Excellent (99%) | Split between negative and positive | Deep learning; ignores neutral |
-
-| BERT | None (0%) | Perfect (100%) | Perfect (100%) | Split between negative and positive | Deep learning; binary bias |
+---
 
 # Final Analysis: Comparing Sentiment Models
 
-Traditional Models (Naive Bayes & Logistic Regression)
+##  Comparative Performance Summary
 
-- Accuracy: 100%
-- Precision/Recall/F1: Perfect across all classes
-- Observation: These results are unusually high, likely due to clean, well-separated data. While impressive, they may not generalize to noisier or more ambiguous reviews.
+###  Traditional Models: Naive Bayes & Logistic Regression
 
-Pretrained Models
+- **Accuracy**: 100%  
+- **Precision / Recall / F1-score**: Perfect across all classes  
+- **Observation**:  
+  These results are unusually high — likely due to clean, well-separated data. While impressive, they may not generalize to noisier or more ambiguous reviews. Caution is advised when applying these models to real-world datasets.
 
-| Model | Accuracy | Strengths | Limitations |
+---
 
-| TextBlob | 67% | Fast, easy to use | Weak on neutral class, oversimplifies |
+###  Pretrained Sentiment Models
 
-| VADER | 67% | Handles informal language well | Struggles with nuanced sentiment |
+| **Model**   | **Accuracy** | **Strengths**                          | **Limitations**                                 |
+|-------------|--------------|----------------------------------------|-------------------------------------------------|
+| **TextBlob** | 67%          | Fast, easy to use                      | Weak on neutral class, oversimplifies sentiment |
+| **VADER**    | 67%          | Handles informal language well         | Struggles with nuanced sentiment                |
+| **Flair**    | 67%          | Strong recall for positive/negative    | Completely misses neutral predictions           |
+| **BERT**     | 67%          | Deep contextual understanding          | Ignores neutral class, slow inference           |
 
-| Flair | 67% | Strong recall for positive/negative | Completely misses neutral predictions |
+>  **Note**: The warning about undefined precision for class 0 (neutral) in Flair and BERT indicates that these models didn’t predict any samples as neutral — a sign of class imbalance or model bias.
 
-| BERT | 67% | Deep contextual understanding | Ignores neutral class, slow inference |
+---
 
-Note: The warning about undefined precision for class 0 (neutral) in Flair and BERT means those models didn’t predict any samples as neutral, a sign of class imbalance or model bias.
+###  Key Takeaways
 
-Key Takeaways
+- **Traditional models** excelled on this dataset, but may be overfitting or benefiting from ideal conditions.
+- **TextBlob and VADER** are useful for quick sentiment tagging, but lack depth and struggle with neutrality.
+- **Flair and BERT** show promise for nuanced understanding, yet require fine-tuning to handle all sentiment classes effectively.
+- **Neutral sentiment** remains the hardest to classify — future work should prioritize improving this category.
 
-- Traditional models excelled on this dataset, but may be overfitting or benefiting from ideal conditions.
-- TextBlob and VADER are great for quick sentiment tagging but lack depth.
-- Flair and BERT show potential for nuanced understanding but need fine-tuning to handle all classes effectively.
-- Neutral sentiment is consistently the hardest to classify, future work should focus on improving this category.
+---
 
 # Model to Save
 """
@@ -522,3 +537,149 @@ pipeline = Pipeline([
 
 pipeline.fit(X_train, y_train)
 joblib.dump(pipeline, 'sentiment_pipeline.pkl')
+
+"""# LSTM - fOR Sentiment Classification"""
+
+# 1. Encode labels for categorical classification
+from tensorflow.keras.utils import to_categorical
+from sklearn.preprocessing import LabelEncoder
+
+# Ensure labels are strings
+df["sentiment_label"] = df["sentiment_label"].astype(str)
+
+label_encoder = LabelEncoder()
+df["sentiment_encoded"] = label_encoder.fit_transform(df["sentiment_label"])
+y = to_categorical(df["sentiment_encoded"], num_classes=3)
+
+# 2. Tokenize and pad sequences
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+max_words = 10000
+max_len = 120
+
+tokenizer = Tokenizer(num_words=max_words, oov_token="<OOV>")
+tokenizer.fit_on_texts(df["review_clean"])
+sequences = tokenizer.texts_to_sequences(df["review_clean"])
+X = pad_sequences(sequences, maxlen=max_len)
+
+# 3. Train-validation split
+from sklearn.model_selection import train_test_split
+X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 4. EarlyStopping callback
+from tensorflow.keras.callbacks import EarlyStopping
+
+early_stop = EarlyStopping(
+    monitor='val_loss', # or val_accuraxy?
+    patience=3,
+    min_delta=1e-5,
+    restore_best_weights=True
+)
+
+# 5. Build LSTM model (cuDNN-compatible)
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, Bidirectional, LSTM, Dense, Dropout, SpatialDropout1D, BatchNormalization
+
+vocab_size = min(max_words, len(tokenizer.word_index) + 1)
+
+model = Sequential([
+    Embedding(input_dim=vocab_size, output_dim=128),  # Removed mask_zero
+    SpatialDropout1D(0.3),
+    Bidirectional(LSTM(64, return_sequences=False)),  # cuDNN-compatible
+    BatchNormalization(),
+    Dropout(0.5),
+    Dense(3, activation='softmax')
+])
+
+model.compile(
+    loss='categorical_crossentropy',
+    optimizer='adam',
+    metrics=['accuracy']
+)
+
+# 6. Train model
+history = model.fit(
+    X_train, y_train,
+    validation_data=(X_val, y_val),
+    epochs=15,
+    batch_size=32,
+    callbacks=[early_stop],
+    verbose=2
+)
+
+# 7. Evaluate model
+import numpy as np
+from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+
+y_pred_probs = model.predict(X_val)
+y_pred = np.argmax(y_pred_probs, axis=1)
+y_true = np.argmax(y_val, axis=1)
+
+print("LSTM Classification Report:")
+print(classification_report(y_true, y_pred, target_names=label_encoder.classes_))
+
+cm = confusion_matrix(y_true, y_pred)
+ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=label_encoder.classes_).plot(xticks_rotation=45)
+plt.title("LSTM Confusion Matrix")
+plt.show()
+
+model.save("lstm_sentiment_model.keras")
+
+import joblib
+
+joblib.dump(tokenizer, "lstm_tokenizer.pkl")
+joblib.dump(label_encoder, "lstm_label_encoder.pkl")
+
+import pickle
+
+with open("lstm_training_history.pkl", "wb") as f:
+    pickle.dump(history.history, f)
+
+# from keras.models import load_model
+# import joblib
+# import pickle
+
+# model = load_model("lstm_sentiment_model.keras")
+# tokenizer = joblib.load("lstm_tokenizer.pkl")
+# label_encoder = joblib.load("lstm_label_encoder.pkl")
+
+# with open("lstm_training_history.pkl", "rb") as f:
+#     history = pickle.load(f)
+
+"""## Final Report: LSTM Model Performance and Training Insights
+
+###  What I Learned
+
+As part of my exploration into deep learning for text classification, I trained an LSTM model over 15 epochs. The results were both impressive and revealing, offering valuable lessons about model behavior, evaluation, and potential pitfalls.
+
+---
+
+### Training & Validation Metrics (Epochs 1–5)
+
+| **Epoch** | **Training Accuracy** | **Training Loss** | **Validation Accuracy** | **Validation Loss** |
+|-----------|------------------------|--------------------|--------------------------|----------------------|
+| 1         | 0.9932                 | 0.0179             | 1.0000                   | 8.69e-05             |
+| 2         | 1.0000                 | 2.21e-04           | 1.0000                   | 5.75e-07             |
+| 3         | 1.0000                 | 6.70e-05           | 1.0000                   | 9.44e-07             |
+| 4         | 1.0000                 | 6.03e-05           | 0.6713                   | 1.5528               |
+| 5         | 0.9992                 | 0.0023             | 1.0000                   | 7.03e-10             |
+
+>  **Observation**: The model reached near-perfect accuracy and extremely low loss within just a few epochs. However, the sudden drop in validation accuracy at epoch 4 (to 67.13%) suggests a possible data shuffle issue, overfitting, or a batch anomaly. This highlights the importance of monitoring both training and validation metrics continuously.
+
+---
+
+### Final Evaluation: Classification Report
+
+| **Class** | **Precision** | **Recall** | **F1-Score** | **Support** |
+|-----------|---------------|------------|--------------|-------------|
+| -1        | 1.00          | 1.00       | 1.00         | 3325        |
+| 0         | 1.00          | 1.00       | 1.00         | 3317        |
+| 1         | 1.00          | 1.00       | 1.00         | 3358        |
+| **Overall Accuracy** | **1.00** | — | — | **10,000** |
+
+>  **Insight**: The model achieved perfect classification across all sentiment classes. While this is exciting, it may reflect ideal conditions, such as clean, balanced data or limited linguistic ambiguity, rather tHan true generalization.
+
+---
+"""
